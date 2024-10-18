@@ -65,7 +65,7 @@ class paddle:
             y_mod = 1
 
         #if ball is close to center of paddle, try to move less
-        #than speed so it doesn't overshoot
+        #than speed so the paddle doesn't overshoot
         elif(y <= target_y + 10 and y >= target_y - 10): 
             if (y == target_y):
                 y_mod = 0
@@ -133,11 +133,8 @@ class ball:
     def bounce(self):
         self.x_speed = -self.x_speed
         
-        #randomize bouncing within 20%,
-        #otherwise it's very predictable
-        #not how it works in actual physics but
-        #actual physics is a little complicated
-        #for a simple pong game
+        #randomize bouncing within 20%, otherwise it's very predictable
+        #I acknowledge physics doesn't work like this 
         if (self.x_speed > 0):
             self.x_speed = random.uniform(self.x_speed*0.80, self.x_speed*1.20)
         else:
@@ -167,8 +164,6 @@ class ball:
         self.x_speed = random.uniform(self.speed_base*0.6, self.speed_base)
 
         #set x direction
-        #seperate for now as I try to make this
-        #work like I want
         x_dir = random.randint(1, 2)
         if (x_dir == 2):
             x_dir = -1
@@ -212,7 +207,7 @@ class ball:
             pg.time.wait(300)
             self.reset()
             print("COM: " + str(computer_score) + "  PLY:" + str(player_score))
-        #if ball is heading offscreen vertically
+        #if ball is heading offscreen vertically, reverse its direction
         if ((self.y_pos <= 0 and self.y_speed <= 0) or (self.y_pos >= HEIGHT - self.size and self.y_speed >= 1)):
             self.y_speed = -self.y_speed
 
@@ -226,7 +221,7 @@ class ball:
             self.disco = not self.disco
             if(not self.disco):
                 self.color = WHITE
-
+    #randomizes color with random RGB values
     def disco_time(self):
         new_red = random.randint(0, 255)
         new_blue = random.randint(0, 255)
@@ -256,10 +251,11 @@ def game_loop():
     game_ball.reset()  
     game_ball.display()         
     pg.display.update()
-    pg.time.wait(300)
+    pg.time.wait(700)
     disco_count = 0
 
     while(running):
+        #black background
         screen.fill((0, 0, 0))
 
         #handle quit
@@ -278,7 +274,7 @@ def game_loop():
                 disco_count += 1
 
         
-        #handle keypress
+        #handle keypress, supports arrows and WASD
         keys = pg.key.get_pressed()
         if keys[pg.K_UP] or keys[pg.K_w]:
             y_mod = -1
@@ -303,7 +299,6 @@ def game_loop():
             game_ball.bounce()
 
         #update graphics
-
         player_paddle.update(y_mod)
         game_ball.update()
         display_score(player_score, computer_score)
